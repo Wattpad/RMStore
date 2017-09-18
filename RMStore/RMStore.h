@@ -25,6 +25,7 @@
 @protocol RMStoreReceiptVerifier;
 @protocol RMStoreTransactionPersistor;
 @protocol RMStoreObserver;
+@protocol RMStoreAppStorePaymentDelegate;
 
 extern NSString *const RMStoreErrorDomain;
 extern NSInteger const RMStoreErrorCodeDownloadCanceled;
@@ -158,6 +159,11 @@ extern NSInteger const RMStoreErrorCodeUnableToCompleteVerification;
  */
 @property (nonatomic, weak) id<RMStoreTransactionPersistor> transactionPersistor;
 
+/**
+ The app store payment delegate for purchases made outside of the app in the App Store.
+ */
+@property (nonatomic, weak) id<RMStoreAppStorePaymentDelegate> appStorePaymentDelegate;
+
 
 #pragma mark Product management
 ///---------------------------------------------
@@ -206,6 +212,18 @@ extern NSInteger const RMStoreErrorCodeUnableToCompleteVerification;
 @protocol RMStoreTransactionPersistor<NSObject>
 
 - (void)persistTransaction:(SKPaymentTransaction*)transaction;
+
+@end
+
+@protocol RMStoreAppStorePaymentDelegate
+
+/**
+ Return YES to complete the purchase made outside of the app in the App Store. Return NO to handle the purchase manually later on.
+ */
+- (BOOL)store:(RMStore*)store
+ paymentQueue:(SKPaymentQueue*)queue
+shouldAddStorePayment:(SKPayment*)payment
+          forProduct:(SKProduct*)product;
 
 @end
 
